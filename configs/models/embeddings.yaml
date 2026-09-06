@@ -1,0 +1,19 @@
+# Embedding provider registry (informational — wired via
+# sentinel.retrieval.embeddings). The default requires no download/key.
+providers:
+  hashing-local-v1:
+    class: sentinel.retrieval.embeddings.HashingEmbeddingProvider
+    deterministic: true
+    requires_network: false
+    requires_api_key: false
+    notes: >
+      Signed feature-hashing vectorizer over word/char n-grams. Real
+      classical technique, offline and free, but weaker at semantic
+      (paraphrase/synonym) matching than a trained neural encoder.
+  sentence-transformers:
+    class: sentinel.retrieval.embeddings.SentenceTransformerEmbeddingProvider
+    deterministic: false
+    requires_network: true  # first run downloads model weights
+    requires_api_key: false
+    default_model: all-MiniLM-L6-v2
+    notes: "Install with `pip install sentinel-rag[embeddings]`."

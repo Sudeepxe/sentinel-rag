@@ -1,0 +1,27 @@
+# Deliberately weak configuration used by the failure demo
+# (docs/experiments/10-repair-engine-effectiveness.md and scripts/demo.py):
+# dense-only retrieval (drops BM25's lexical signal), very low top_k, and
+# an oversized chunk size that dilutes both BM25 and dense scoring. This
+# is intentionally realistic misconfiguration, not a strawman — dense-only
+# retrieval with a hashing embedding is exactly the kind of setup that
+# produces real, measurable recall regressions on terminology-mismatch
+# queries.
+name: bad_baseline
+description: "Dense-only retrieval, top_k=1, oversized chunks — deliberately weak for the failure demo."
+dataset_path: datasets/golden/v1.json
+seed: 1337
+retrieval:
+  strategy: dense
+  top_k: 1
+  chunk_size: 1200
+  chunk_overlap: 0
+  use_mmr: false
+  use_reranker: false
+  query_rewrite: none
+  freshness_policy: no-preference
+generation:
+  provider: deterministic_local
+  model: sentinel-deterministic-v1
+  temperature: 0.0
+  max_context_chunks: 1
+  refuse_below_evidence_score: 0.15

@@ -1,0 +1,43 @@
+{
+  "name": "repair-demo",
+  "version": "v0",
+  "description": "Slightly larger dataset used to smoke-test the diagnosis/repair loop against a deliberately weak config.",
+  "cases": [
+    {
+      "id": "repair-001",
+      "question": "How long do we retain customer support tickets?",
+      "documents": [
+        {"id": "doc-a", "title": "Data Retention Schedule", "text": "Support ticket records, including attachments and chat transcripts, are kept for 18 months after the ticket is closed, after which they are purged from primary storage.", "source": "compliance-docs", "authority": 0.9},
+        {"id": "doc-b", "title": "Vacation Policy", "text": "Employees accrue fifteen days of paid vacation per year, increasing to twenty days after five years of tenure.", "source": "hr-docs", "authority": 0.6},
+        {"id": "doc-c", "title": "Office Wifi Setup", "text": "Connect to the guest network using the password posted in the break room. IT rotates the password monthly.", "source": "it-docs", "authority": 0.5},
+        {"id": "doc-d", "title": "Expense Reimbursement", "text": "Submit expense reports within 60 days of the purchase date for reimbursement via the finance portal.", "source": "finance-docs", "authority": 0.6},
+        {"id": "doc-e", "title": "Parking Policy", "text": "Reserved parking spots are assigned by seniority and reviewed annually by facilities.", "source": "facilities-docs", "authority": 0.4},
+        {"id": "doc-f", "title": "Meeting Room Booking", "text": "Book conference rooms through the calendar system at least 30 minutes in advance for meetings over four people.", "source": "it-docs", "authority": 0.3}
+      ],
+      "relevant_document_ids": ["doc-a"],
+      "reference_answer": "Customer support ticket records are retained for 18 months after closure before being purged.",
+      "should_answer": true,
+      "expected_citations": ["doc-a"],
+      "difficulty": "medium",
+      "category": "direct_factual_retrieval",
+      "tags": ["retention", "compliance"]
+    },
+    {
+      "id": "repair-002",
+      "question": "What is our policy on keeping past support requests before we get rid of them?",
+      "documents": [
+        {"id": "doc-a2", "title": "Data Retention Schedule", "text": "Ticket records, including attachments and chat transcripts, remain in the archive for eighteen months following closure, after which they are permanently purged from primary storage.", "source": "compliance-docs", "authority": 0.9},
+        {"id": "doc-g", "title": "Support Request Escalation", "text": "Support requests that remain unresolved for more than 48 hours before being escalated get routed to a senior agent for follow-up.", "source": "support-docs", "authority": 0.5},
+        {"id": "doc-h", "title": "Support Request Intake Form", "text": "New support requests must include an account ID, a description of the issue, and the urgency level before being submitted to the queue.", "source": "support-docs", "authority": 0.4},
+        {"id": "doc-i", "title": "Support Request Prioritization", "text": "Support requests are prioritized by severity; before assignment, a triage agent tags each request with a priority level.", "source": "support-docs", "authority": 0.4}
+      ],
+      "relevant_document_ids": ["doc-a2"],
+      "reference_answer": "Ticket records remain in the archive for eighteen months after closure before being permanently purged.",
+      "should_answer": true,
+      "expected_citations": ["doc-a2"],
+      "difficulty": "hard",
+      "category": "paraphrased_queries",
+      "tags": ["retention", "compliance", "terminology-mismatch"]
+    }
+  ]
+}

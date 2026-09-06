@@ -1,0 +1,13 @@
+name: ablation_a_dense_only
+description: "Ablation stage A: dense retrieval only."
+dataset_path: datasets/golden/v1.json
+seed: 1337
+retrieval:
+  strategy: dense
+  top_k: 5
+  chunk_size: 400
+  chunk_overlap: 50
+generation:
+  provider: deterministic_local
+  max_context_chunks: 5
+  refuse_below_evidence_score: 0.15

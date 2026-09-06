@@ -1,0 +1,10 @@
+# Default acceptance criteria for the controlled auto-repair loop
+# (spec section 20 / sentinel.repair.acceptance). Thresholds are
+# deliberately conservative and are meant to be tuned per deployment —
+# nothing here is a magic number baked into the engine itself.
+min_relative_improvement:
+  recall_at_5: 0.05
+max_latency_regression_pct: 0.15
+forbid_regression_metrics:
+  - answer_relevance
+  - citation_precision

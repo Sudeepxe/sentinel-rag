@@ -1,0 +1,13 @@
+name: ablation_b_bm25_plus_dense_rrf
+description: "Ablation stage B: dense + BM25 fused via RRF."
+dataset_path: datasets/golden/v1.json
+seed: 1337
+retrieval:
+  strategy: hybrid_rrf
+  top_k: 5
+  chunk_size: 400
+  chunk_overlap: 50
+generation:
+  provider: deterministic_local
+  max_context_chunks: 5
+  refuse_below_evidence_score: 0.15

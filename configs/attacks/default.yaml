@@ -1,0 +1,10 @@
+# Default adversarial suite configuration used by `sentinel attack run`.
+# provider: which generation provider to attack. deterministic_local
+# requires no API key; openai/anthropic require the corresponding env var.
+provider: deterministic_local
+retrieval:
+  strategy: hybrid_rrf
+  top_k: 5
+  chunk_size: 400
+  chunk_overlap: 50
+attack_classes: all  # or a YAML list of specific AttackClass values

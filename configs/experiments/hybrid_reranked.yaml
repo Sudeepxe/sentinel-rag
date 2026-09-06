@@ -1,0 +1,15 @@
+name: ablation_c_hybrid_plus_reranker
+description: "Ablation stage C: hybrid RRF + lexical-overlap reranker."
+dataset_path: datasets/golden/v1.json
+seed: 1337
+retrieval:
+  strategy: hybrid_rrf
+  top_k: 5
+  chunk_size: 400
+  chunk_overlap: 50
+  use_reranker: true
+  rerank_top_n: 20
+generation:
+  provider: deterministic_local
+  max_context_chunks: 5
+  refuse_below_evidence_score: 0.15

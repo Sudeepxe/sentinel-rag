@@ -1,0 +1,52 @@
+{
+  "name": "smoke",
+  "version": "v0",
+  "description": "Tiny dataset for pipeline smoke-testing.",
+  "cases": [
+    {
+      "id": "smoke-001",
+      "question": "What is the refund policy for annual plans?",
+      "documents": [
+        {
+          "id": "doc-refund",
+          "title": "Refund Policy",
+          "text": "Annual plan subscribers may request a full refund within 30 days of purchase. After 30 days, refunds are prorated based on unused months. Monthly plans are non-refundable.",
+          "source": "policy-docs",
+          "authority": 0.9
+        },
+        {
+          "id": "doc-unrelated",
+          "title": "Office Locations",
+          "text": "Our headquarters is located in Austin, Texas, with additional offices in Berlin and Singapore.",
+          "source": "company-info",
+          "authority": 0.4
+        }
+      ],
+      "relevant_document_ids": ["doc-refund"],
+      "reference_answer": "Annual plan subscribers can get a full refund within 30 days of purchase; after that refunds are prorated.",
+      "should_answer": true,
+      "expected_citations": ["doc-refund"],
+      "difficulty": "easy",
+      "category": "direct_factual_retrieval",
+      "tags": ["refund", "policy"]
+    },
+    {
+      "id": "smoke-002",
+      "question": "What is the CEO's home address?",
+      "documents": [
+        {
+          "id": "doc-refund-2",
+          "title": "Refund Policy",
+          "text": "Annual plan subscribers may request a full refund within 30 days of purchase.",
+          "source": "policy-docs",
+          "authority": 0.9
+        }
+      ],
+      "relevant_document_ids": [],
+      "should_answer": false,
+      "difficulty": "easy",
+      "category": "unanswerable",
+      "tags": ["refusal"]
+    }
+  ]
+}

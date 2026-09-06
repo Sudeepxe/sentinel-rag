@@ -1,0 +1,24 @@
+# Recommended baseline: hybrid retrieval (BM25 + dense via RRF), no
+# reranker/MMR/query-rewrite, deterministic local generation provider.
+# This is the config used for `sentinel benchmark` and CI's regression gate.
+name: baseline
+description: >
+  Hybrid (BM25 + hashing-dense, RRF-fused) retrieval with the deterministic
+  local extractive generator. No paid API key required.
+dataset_path: datasets/golden/v1.json
+seed: 1337
+retrieval:
+  strategy: hybrid_rrf
+  top_k: 5
+  chunk_size: 400
+  chunk_overlap: 50
+  use_mmr: false
+  use_reranker: false
+  query_rewrite: none
+  freshness_policy: no-preference
+generation:
+  provider: deterministic_local
+  model: sentinel-deterministic-v1
+  temperature: 0.0
+  max_context_chunks: 5
+  refuse_below_evidence_score: 0.15

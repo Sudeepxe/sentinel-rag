@@ -1,0 +1,9 @@
+# Pointer/metadata for the golden dataset. The dataset itself lives in
+# datasets/golden/v1.json (versioned, validated by sentinel.schemas.dataset).
+name: golden
+version: v1
+path: datasets/golden/v1.json
+description: >
+  50-case deterministic evaluation dataset spanning 16 categories
+  (see datasets/golden/README.md). Not optimized against — see
+  docs/evaluation/dataset-design.md for the overfitting-risk discussion.
