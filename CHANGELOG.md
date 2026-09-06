@@ -21,7 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Adversarial testing framework covering prompt injection, retrieval
   poisoning, context flooding, and citation manipulation, with a
   SAFE/PARTIAL/FAILED/UNKNOWN attack-outcome taxonomy.
-- 50-case golden evaluation dataset spanning 16 categories.
+- 53-case golden evaluation dataset spanning 16 categories.
 - CLI (`sentinel ...`) covering dataset validation, evaluation, attacks,
   diagnosis, repair, experiments, benchmarking, and reporting.
 - Optional FastAPI service exposing the same operations over HTTP.
@@ -31,6 +31,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Known limitations
 
 See `README.md#limitations` and `docs/architecture/overview.md` for the
-full, current list (LLM-judge evaluation requires an external API key and
-is disabled by default in CI; no committed web UI in v1; pgvector backend
-is documented but the shipped default is a local vector index).
+full, current list (LLM-judge faithfulness is an interface + versioned
+prompt with the actual model call left as an explicit extension point,
+not wired to a provider; no committed web UI in v1; pgvector is available
+via `docker-compose.yml` for a production deployment but the shipped
+`ReferenceRAGAdapter`/CLI use local JSON storage and do not require it).
