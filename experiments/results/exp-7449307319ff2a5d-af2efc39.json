@@ -1,0 +1,114 @@
+{
+  "experiment_id": "exp-7449307319ff2a5d-af2efc39",
+  "name": "rewrite_decompose",
+  "timestamp": "2026-09-06T04:49:32.701849+00:00",
+  "git_commit": "f0ba1bf",
+  "dataset_version": "v1",
+  "config_hash": "c48d4271df862d3b",
+  "config": {
+    "name": "rewrite_decompose",
+    "description": "",
+    "dataset_path": "/Users/sudeep/Desktop/Sentinel-RAG/datasets/golden/v1.json",
+    "retrieval": {
+      "strategy": "hybrid_rrf",
+      "top_k": 5,
+      "chunk_size": 400,
+      "chunk_overlap": 50,
+      "use_mmr": false,
+      "mmr_lambda": 0.5,
+      "use_reranker": false,
+      "rerank_top_n": 20,
+      "query_rewrite": "decompose",
+      "freshness_policy": "no-preference"
+    },
+    "generation": {
+      "provider": "deterministic_local",
+      "model": "sentinel-deterministic-v1",
+      "temperature": 0.0,
+      "max_context_chunks": 5,
+      "refuse_below_evidence_score": 0.15
+    },
+    "seed": 1337
+  },
+  "metrics": {
+    "answer_relevance": {
+      "value": 0.2099829584505537,
+      "method": "unavailable",
+      "detail": "mean over 44/53 cases"
+    },
+    "citation_precision": {
+      "value": 1.0,
+      "method": "unavailable",
+      "detail": "mean over 48/53 cases"
+    },
+    "citation_recall": {
+      "value": 1.0,
+      "method": "unavailable",
+      "detail": "mean over 48/53 cases"
+    },
+    "estimated_cost_usd": {
+      "value": 0.0,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "faithfulness": {
+      "value": 1.0,
+      "method": "unavailable",
+      "detail": "mean over 48/53 cases"
+    },
+    "hit_rate_at_5": {
+      "value": 1.0,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "latency_ms": {
+      "value": 0.12780522778278813,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "mrr": {
+      "value": 0.8270440251572327,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "ndcg_at_5": {
+      "value": 0.9557480899595715,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "precision_at_5": {
+      "value": 0.5666666666666667,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "recall_at_5": {
+      "value": 1.0,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "refusal_label": {
+      "value": null,
+      "method": "unavailable",
+      "detail": "no cases produced a value"
+    },
+    "total_tokens": {
+      "value": 122.35849056603773,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    }
+  },
+  "duration_s": 0.05148395799915306,
+  "environment": {
+    "python_version": "3.12.13",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "sentinel_version": "1.0.0",
+    "packages": {
+      "pydantic": "2.13.5",
+      "numpy": "2.5.2",
+      "fastapi": "0.141.1",
+      "typer": "0.27.2"
+    }
+  },
+  "num_cases": 53,
+  "num_failures": 7
+}

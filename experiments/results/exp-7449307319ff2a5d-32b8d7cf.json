@@ -1,0 +1,114 @@
+{
+  "experiment_id": "exp-7449307319ff2a5d-32b8d7cf",
+  "name": "golden_bad_baseline+top_k=2",
+  "timestamp": "2026-09-06T04:49:34.431424+00:00",
+  "git_commit": "f0ba1bf",
+  "dataset_version": "v1",
+  "config_hash": "27056284aee43493",
+  "config": {
+    "name": "golden_bad_baseline+top_k=2",
+    "description": "",
+    "dataset_path": "/Users/sudeep/Desktop/Sentinel-RAG/datasets/golden/v1.json",
+    "retrieval": {
+      "strategy": "dense",
+      "top_k": 2,
+      "chunk_size": 1200,
+      "chunk_overlap": 0,
+      "use_mmr": false,
+      "mmr_lambda": 0.5,
+      "use_reranker": false,
+      "rerank_top_n": 20,
+      "query_rewrite": "none",
+      "freshness_policy": "no-preference"
+    },
+    "generation": {
+      "provider": "deterministic_local",
+      "model": "sentinel-deterministic-v1",
+      "temperature": 0.0,
+      "max_context_chunks": 1,
+      "refuse_below_evidence_score": 0.15
+    },
+    "seed": 1337
+  },
+  "metrics": {
+    "answer_relevance": {
+      "value": 0.19751930769355636,
+      "method": "unavailable",
+      "detail": "mean over 44/53 cases"
+    },
+    "citation_precision": {
+      "value": 1.0,
+      "method": "unavailable",
+      "detail": "mean over 48/53 cases"
+    },
+    "citation_recall": {
+      "value": 1.0,
+      "method": "unavailable",
+      "detail": "mean over 48/53 cases"
+    },
+    "estimated_cost_usd": {
+      "value": 0.0,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "faithfulness": {
+      "value": 1.0,
+      "method": "unavailable",
+      "detail": "mean over 48/53 cases"
+    },
+    "hit_rate_at_2": {
+      "value": 0.9811320754716981,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "latency_ms": {
+      "value": 0.09151803601954905,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "mrr": {
+      "value": 0.8113207547169812,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "ndcg_at_2": {
+      "value": 0.939350538140165,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "precision_at_2": {
+      "value": 0.6037735849056604,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "recall_at_2": {
+      "value": 0.9811320754716981,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    },
+    "refusal_label": {
+      "value": null,
+      "method": "unavailable",
+      "detail": "no cases produced a value"
+    },
+    "total_tokens": {
+      "value": 78.33962264150944,
+      "method": "mechanical",
+      "detail": "mean over 53/53 cases"
+    }
+  },
+  "duration_s": 0.04836470901500434,
+  "environment": {
+    "python_version": "3.12.13",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "sentinel_version": "1.0.0",
+    "packages": {
+      "pydantic": "2.13.5",
+      "numpy": "2.5.2",
+      "fastapi": "0.141.1",
+      "typer": "0.27.2"
+    }
+  },
+  "num_cases": 53,
+  "num_failures": 8
+}

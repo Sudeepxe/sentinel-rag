@@ -24,7 +24,11 @@ from sentinel.repair.engine import RepairEngine  # noqa: E402
 from sentinel.retrieval.conflict import detect_conflicts  # noqa: E402
 from sentinel.schemas.attacks import AttackClass  # noqa: E402
 from sentinel.schemas.documents import Document  # noqa: E402
-from sentinel.schemas.experiments import ExperimentConfig, GenerationConfig, RetrievalConfig  # noqa: E402
+from sentinel.schemas.experiments import (  # noqa: E402
+    ExperimentConfig,
+    GenerationConfig,
+    RetrievalConfig,
+)
 from sentinel.storage.dataset_store import load_dataset  # noqa: E402
 from sentinel.storage.experiment_store import save_experiment_result  # noqa: E402
 

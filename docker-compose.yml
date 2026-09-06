@@ -1,0 +1,30 @@
+services:
+  sentinel-api:
+    build: .
+    entrypoint: ["uvicorn", "sentinel.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    volumes:
+      - ./experiments/results:/app/experiments/results
+      - ./reports:/app/reports
+
+  # Optional: a real vector-backed storage layer for a production deployment.
+  # The shipped ReferenceRAGAdapter/CLI use local JSON and do not require this
+  # service (see docs/architecture/overview.md#storage and ADR-003).
+  postgres:
+    image: ankane/pgvector:v0.5.1
+    environment:
+      POSTGRES_USER: sentinel
+      POSTGRES_PASSWORD: sentinel
+      POSTGRES_DB: sentinel_rag
+    ports:
+      - "5432:5432"
+    volumes:
+      - sentinel_pgdata:/var/lib/postgresql/data
+    profiles: ["postgres"]
+
+volumes:
+  sentinel_pgdata:

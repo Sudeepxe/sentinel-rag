@@ -1,0 +1,50 @@
+name: PR checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  fast-checks:
+    name: Lint, typecheck, unit/integration tests, deterministic evaluation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Ruff lint
+        run: ruff check src tests scripts
+
+      - name: mypy
+        run: mypy src/sentinel
+
+      - name: Bandit security scan
+        run: bandit -c pyproject.toml -r src/sentinel -q
+
+      - name: Unit + integration + property + evaluation tests
+        run: pytest tests/unit tests/integration tests/property tests/evaluation -q
+
+      - name: Adversarial regression tests (golden-set injection cases only)
+        run: pytest tests/adversarial -q
+
+      - name: Validate golden dataset
+        run: sentinel dataset validate datasets/golden/v1.json
+
+      - name: Deterministic evaluation (offline, no API key)
+        run: sentinel evaluate --config configs/experiments/baseline.yaml --format json
+
+      - name: Build package
+        run: |
+          pip install build
+          python -m build

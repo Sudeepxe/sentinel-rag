@@ -1,0 +1,56 @@
+name: Nightly full evaluation
+
+on:
+  schedule:
+    - cron: "0 7 * * *" # 07:00 UTC daily
+  workflow_dispatch: {}
+
+jobs:
+  full-suite:
+    name: Full evaluation, adversarial suite, benchmark, regression gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Full deterministic evaluation
+        run: sentinel evaluate --config configs/experiments/baseline.yaml --format json | tee /tmp/candidate.json
+
+      - name: Persist candidate experiment id
+        id: candidate
+        run: echo "id=$(python -c "import json;print(json.load(open('/tmp/candidate.json'))['experiment_id'])")" >> "$GITHUB_OUTPUT"
+
+      - name: Full adversarial suite
+        run: |
+          sentinel attack generate --dataset datasets/golden/v1.json --out /tmp/attacks.json --limit-cases 53
+          sentinel attack run --attacks /tmp/attacks.json --format json | tee /tmp/attack_report.json
+
+      - name: Research-style experiment battery
+        run: python scripts/run_all_experiments.py
+
+      - name: Regenerate benchmark report
+        run: sentinel benchmark --config configs/experiments/baseline.yaml
+
+      - name: Regression gate against committed baseline
+        # experiments/results/baseline_v1.json is the canonical, committed
+        # reference result (spec section 30). Refresh it deliberately via
+        # `make reproduce` + a manual commit when the baseline config
+        # changes intentionally — never overwrite it automatically here.
+        run: sentinel gate --baseline experiments/results/baseline_v1.json --candidate "${{ steps.candidate.outputs.id }}" --format json
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-reports
+          path: |
+            reports/
+            experiments/results/

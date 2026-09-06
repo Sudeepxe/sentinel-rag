@@ -23,7 +23,12 @@ from sentinel.core.config_loader import load_experiment_config
 from sentinel.core.repro import capture_environment, get_git_commit, get_git_dirty
 from sentinel.diagnosis.engine import DiagnosisEngine
 from sentinel.evaluation.evaluator import CaseEvaluator
-from sentinel.experiments.ablation import AblationStage, AblationStageResult, marginal_deltas, run_ablation
+from sentinel.experiments.ablation import (
+    AblationStage,
+    AblationStageResult,
+    marginal_deltas,
+    run_ablation,
+)
 from sentinel.experiments.comparison import compare_experiments
 from sentinel.experiments.runner import ExperimentRunner
 from sentinel.repair.acceptance import evaluate_acceptance

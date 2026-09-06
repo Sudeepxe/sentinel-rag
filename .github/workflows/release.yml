@@ -1,0 +1,67 @@
+name: Release reproducibility check
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch: {}
+
+jobs:
+  reproducibility-check:
+    name: Full reproducibility verification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies (pinned, from lockfile-equivalent constraints)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Full check (lint, typecheck, security, tests)
+        run: |
+          ruff check src tests scripts
+          mypy src/sentinel
+          bandit -c pyproject.toml -r src/sentinel -q
+          pytest tests/ -q
+
+      - name: Regenerate golden dataset and diff against committed copy
+        run: |
+          cp datasets/golden/v1.json /tmp/v1.committed.json
+          python scripts/build_golden_dataset.py
+          diff /tmp/v1.committed.json datasets/golden/v1.json
+
+      - name: Reproduce the canonical baseline experiment and compare
+        run: |
+          sentinel evaluate --config configs/experiments/baseline.yaml --format json | tee /tmp/reproduced.json
+          python -c "
+          import json
+          # latency_ms is real wall-clock time and is NOT expected to reproduce
+          # exactly between machines/runs; every other metric, produced by the
+          # deterministic local provider, must match bit-for-bit.
+          NONDETERMINISTIC = {'latency_ms'}
+          a = json.load(open('experiments/results/baseline_v1.json'))['metrics']
+          b = json.load(open('/tmp/reproduced.json'))['metrics']
+          mismatches = {
+              k: (a[k]['value'], b.get(k))
+              for k in a
+              if k not in NONDETERMINISTIC and a[k]['value'] != b.get(k)
+          }
+          if mismatches:
+              print('RECOMPUTED METRICS DIFFER FROM COMMITTED BASELINE:', mismatches)
+              raise SystemExit(1)
+          print('Baseline metrics reproduced exactly (excluding wall-clock latency).')
+          "
+
+      - name: Build distributable package
+        run: |
+          pip install build
+          python -m build
+
+      - name: Build Docker image
+        run: docker build -t sentinel-rag:${{ github.ref_name }} .
