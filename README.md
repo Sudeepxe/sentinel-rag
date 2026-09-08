@@ -57,7 +57,7 @@ sentinel doctor                       # environment sanity check
 sentinel dataset validate datasets/golden/v1.json
 sentinel evaluate --config configs/experiments/baseline.yaml
 sentinel benchmark                    # writes reports/latest.{md,json,html}
-pytest tests/ -q                      # 66 tests, no API key required
+pytest tests/ -q                      # 74 tests, no API key required
 ```
 
 No API key, no network access, and no GPU are required for any of the above — everything runs on
