@@ -48,7 +48,7 @@ jobs:
         run: sentinel gate --baseline experiments/results/baseline_v1.json --candidate "${{ steps.candidate.outputs.id }}" --format json
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nightly-reports
           path: |
