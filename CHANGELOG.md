@@ -27,6 +27,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Optional FastAPI service exposing the same operations over HTTP.
 - GitHub Actions CI with PR/nightly/release lanes and a regression gate.
 - Architecture docs, ADRs, and a threat model.
+- Exact-match metadata filtering on retrieval (`RetrievalConfig.metadata_filter`).
+- OpenTelemetry tracing over the dataset-case -> retrieval -> generation ->
+  evaluation -> diagnosis -> repair -> experiment chain, no-op when
+  `opentelemetry-sdk` isn't installed (verified both ways in CI).
 
 ### Known limitations
 

@@ -25,6 +25,23 @@ from sentinel.schemas.retrieval import RetrievalHit, RetrievalResult
 VALID_STRATEGIES = ("bm25", "dense", "hybrid_rrf")
 
 
+def _apply_metadata_filter(chunks: list[Chunk], metadata_filter: dict[str, str]) -> list[Chunk]:
+    """Exact-match filter over chunk.source plus chunk.metadata, applied
+    before indexing so a filtered-out chunk can never be retrieved
+    (rather than retrieved-then-discarded, which would corrupt top_k
+    accounting). A filter matching zero chunks is a real, reportable
+    METADATA_FILTERING_FAILURE, not silently ignored.
+    """
+    if not metadata_filter:
+        return chunks
+    filtered = []
+    for chunk in chunks:
+        fields = {"source": chunk.source, **chunk.metadata}
+        if all(fields.get(key) == value for key, value in metadata_filter.items()):
+            filtered.append(chunk)
+    return filtered
+
+
 class HybridRetriever:
     def __init__(
         self,
@@ -36,12 +53,12 @@ class HybridRetriever:
         self.config = config or RetrievalConfig()
         if self.config.strategy not in VALID_STRATEGIES:
             raise ValueError(f"unknown retrieval strategy: {self.config.strategy!r}")
-        self.chunks = chunks
+        self.chunks = _apply_metadata_filter(chunks, self.config.metadata_filter)
         self.embedder = embedder or HashingEmbeddingProvider()
         self.reranker = reranker or LexicalOverlapReranker()
-        self._by_id = {c.id: c for c in chunks}
-        self.bm25 = BM25Index(chunks) if chunks else None
-        self.dense = DenseIndex(chunks, self.embedder) if chunks else None
+        self._by_id = {c.id: c for c in self.chunks}
+        self.bm25 = BM25Index(self.chunks) if self.chunks else None
+        self.dense = DenseIndex(self.chunks, self.embedder) if self.chunks else None
 
     def _score_single_query(self, query: str) -> dict[str, float]:
         if not self.chunks:

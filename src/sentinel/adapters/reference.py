@@ -12,6 +12,7 @@ from __future__ import annotations
 from sentinel.adapters.base import RAGSystem
 from sentinel.generation.base import GenerationProvider
 from sentinel.generation.factory import get_generation_provider
+from sentinel.observability.tracing import span
 from sentinel.retrieval.chunking import chunk_documents
 from sentinel.retrieval.embeddings import EmbeddingProvider, HashingEmbeddingProvider
 from sentinel.retrieval.retriever import HybridRetriever
@@ -50,10 +51,14 @@ class ReferenceRAGAdapter(RAGSystem):
     def retrieve(self, query: str) -> RetrievalResult:
         if self._retriever is None:
             raise RuntimeError("ingest() must be called before retrieve()")
-        return self._retriever.retrieve(query)
+        with span("retrieval", strategy=self.retrieval_config.strategy, top_k=self.retrieval_config.top_k):
+            return self._retriever.retrieve(query)
 
     def generate(self, query: str, retrieval: RetrievalResult) -> GenerationOutput:
-        return self._generation_provider.generate(query, retrieval.hits, self.generation_config)
+        with span(
+            "generation", provider=self.generation_config.provider, evidence_chunks=len(retrieval.hits)
+        ):
+            return self._generation_provider.generate(query, retrieval.hits, self.generation_config)
 
     def full_ranking(self, query: str) -> list[str] | None:
         if self._retriever is None:

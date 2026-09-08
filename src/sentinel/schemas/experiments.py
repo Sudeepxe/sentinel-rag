@@ -16,6 +16,11 @@ class RetrievalConfig(BaseModel):
     rerank_top_n: int = 20
     query_rewrite: str = Field(default="none", description="none | expansion | hyde | decompose | keyword")
     freshness_policy: str = Field(default="no-preference")
+    metadata_filter: dict[str, str] = Field(
+        default_factory=dict,
+        description="Exact-match filter applied to Chunk.metadata before scoring, e.g. "
+        "{'source': 'policy-docs'}. Empty (default) means no filtering.",
+    )
 
 
 class GenerationConfig(BaseModel):

@@ -49,7 +49,10 @@ form a pipeline that never reaches back into `retrieval`/`generation` internals 
 `ingest(documents)`, `retrieve(query) -> RetrievalResult`, `generate(query, retrieval) ->
 GenerationOutput`, plus an optional `full_ranking(query)` used by diagnosis to find the true rank
 of a missed relevant document. `ReferenceRAGAdapter` is one real implementation (BM25 + hashing
-dense + RRF + optional rerank/MMR/query-rewrite + pluggable generation provider);
+dense + RRF + optional rerank/MMR/query-rewrite/exact-match metadata filtering + pluggable
+generation provider); metadata filtering (`RetrievalConfig.metadata_filter`) matches against
+`chunk.source` plus `chunk.metadata` and is applied before indexing, so a filtered-out chunk is
+structurally unretrievable rather than retrieved-then-discarded (`sentinel.retrieval.retriever._apply_metadata_filter`);
 `DeterministicTestAdapter` is a canned-output stub used to test Sentinel's own evaluation
 machinery in isolation. Evaluating a third-party RAG system means writing one more `RAGSystem`
 implementation that calls out to that system — no other code changes.
@@ -118,11 +121,16 @@ connection instead of a filesystem path.
 
 `sentinel.observability.logging` emits structured JSON logs with no raw prompt/evidence content at
 INFO+ (see `docs/security/threat-model.md`). `sentinel.observability.metrics` defines
-Prometheus-compatible `Counter`/`Histogram` objects that no-op if `prometheus_client` isn't
-installed, so the core library has no hard dependency on it. OpenTelemetry tracing spans
-(`sentinel.observability.tracing`, per spec section 26/35) are a stated v1.1 addition — logging and
-metrics ship in v1; a wired-up OTel exporter does not, to avoid a heavy dependency for a benchmark
-tool most users will run locally/in CI rather than as a long-running service.
+Prometheus-compatible `Counter`/`Histogram` objects, and `sentinel.observability.tracing.span`
+instruments the full `dataset_case -> retrieval -> generation -> evaluation -> diagnosis -> repair
+-> experiment` chain (spec section 26/35) — both no-op if `prometheus_client`/`opentelemetry-sdk`
+aren't installed, so the core library has no hard dependency on either. `ExperimentRunner.run` and
+`ReferenceRAGAdapter.retrieve/generate` and `RepairEngine.suggest` all emit real spans when the
+`observability` extra is installed (`pip install sentinel-rag[observability]`); both the
+instrumented and no-op paths are covered by `tests/unit/test_tracing.py`. No OTLP exporter/collector
+is wired up by default — spans exist and are real, but nothing ships them anywhere outside the
+current process without additional OpenTelemetry SDK configuration, which is deployment-specific
+and out of scope for this library.
 
 ## Known v1 limitations (see also each experiment's own Limitations section)
 
@@ -132,7 +140,7 @@ tool most users will run locally/in CI rather than as a long-running service.
 - Conflict detection (`sentinel.retrieval.conflict`) is a standalone signal, not yet consumed by
   diagnosis/repair (Experiment 9).
 - Acceptance-criteria selection in `sentinel repair run` is not failure-type-aware (Experiment 10).
-- OpenTelemetry tracing is not wired up; structured logging + Prometheus-compatible metrics are.
+- No OTLP exporter is configured by default for the OpenTelemetry spans that are emitted.
 - `SentenceTransformerEmbeddingProvider` and a real cross-encoder `Reranker` are implemented as
   extension points but not exercised by the default benchmark (they require extra dependencies /
   model downloads that would break offline CI reproducibility).

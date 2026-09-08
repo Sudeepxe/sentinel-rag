@@ -196,8 +196,11 @@ Stated plainly, not buried:
 - **Conflict detection is a standalone signal**, not yet consumed by diagnosis/repair.
 - **Acceptance-criteria selection is not failure-type-aware** — see Experiment 10.
 - **No committed web UI** — the CLI plus generated HTML report are the v1 UI surface.
-- **No OpenTelemetry tracing wired up** — structured logging and Prometheus-compatible metrics
-  ship in v1; distributed tracing does not.
+- **OpenTelemetry tracing is wired up but produces no spans by default** — `sentinel.observability.tracing.span`
+  instruments the full dataset-case -> retrieval -> generation -> evaluation -> diagnosis -> repair
+  -> experiment chain, and is a genuine no-op (not a fabricated trace) unless
+  `pip install sentinel-rag[observability]` is installed; verified both ways in
+  `tests/unit/test_tracing.py`.
 
 ## Security
 
@@ -236,7 +239,8 @@ metrics, provider-agnostic core, deterministic CI path, decisions documented as 
 - Failure-type-aware acceptance criteria routing in `sentinel repair run`.
 - A real cross-encoder `Reranker` implementation as an optional extra.
 - Consume `sentinel.retrieval.conflict` output in diagnosis/repair.
-- OpenTelemetry trace export alongside the existing structured logging/metrics.
+- Wire an actual OTLP exporter/collector into the tracing setup (spans exist; nothing ships them
+  anywhere by default yet).
 - A minimal web UI over the existing FastAPI service (`src/sentinel/api`), which currently exposes
   every CLI operation over HTTP but has no frontend.
 
